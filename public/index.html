@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>J</title>
+</head>
+
+<body>
+
+    <h1>Pulsa F12</h1>
+    <script>
+        let partidos = [1, 2, 3, 4, 5, 6];
+
+        let combinacionesTotales = combinations(partidos, true);
+
+        let combinacionesTriples = [];
+
+        let dineroInvertido = 0;
+
+        let dineroGanado = 0;
+
+
+
+        // combinacionesTotales.forEach(element => {
+        //     if (element.length === 5) {
+        //         combinacionesTriples.push(element);
+        //     }
+
+        // });
+
+
+        //=====================
+        // PRUEBA REDUCIDAS
+        //=====================
+        combinacionesTriples.push('1-3-5');
+        // combinacionesTriples.push('2-4-6');
+        // combinacionesTriples.push('1-4-5');
+        // combinacionesTriples.push('2-3-6');
+        // combinacionesTriples.push('1-2-6');
+        // combinacionesTriples.push('2-3-5');
+
+        //FIN PRUEBA REDUCIDAS
+
+        console.log(`Combinaciones posibles de 3 para ${partidos.length} partidos: ${ combinacionesTriples.length }`);
+        combinacionesTriples.forEach(element => {
+            console.log(element);
+            dineroInvertido--;
+        });
+
+        console.log(`Dinero invertido: ${dineroInvertido} `);
+
+        //UN PARTIDO
+        // partidos.forEach(partido => {
+        //         let combinacionesAcertadasUnFallo = [];
+        //         combinacionesTriples.forEach(element => {
+        //             if(element.indexOf(partido)===-1){
+        //                 combinacionesAcertadasUnFallo.push(element);
+        //             }
+        //         });
+
+
+
+        //        console.log(`Combinaciones acertadas fallando el partido ${ partido }: ${ combinacionesAcertadasUnFallo.length } que equivale a un ${ combinacionesAcertadasUnFallo.length/combinacionesTriples.length*100 }% de acierto`);
+        //        combinacionesAcertadasUnFallo.forEach(element => {
+        //            console.log(element);
+        //        });
+
+
+
+
+        //     });
+
+        //DOS PARTIDOS
+        let porcentajeTotal = 0;
+        let numero = 0;
+        let partidoRevisados = [];
+
+        partidos.forEach(partido => {
+
+            partidoRevisados.push(partido);
+
+            let combinacionesAcertadasUnFallo = [];
+            combinacionesTriples.forEach(element => {
+                if (element.indexOf(partido) === -1) {
+                    combinacionesAcertadasUnFallo.push(element);
+                }
+            });
+
+            partidos.forEach(segundoPartido => {
+                dineroGanado = 0;
+                if (!partidoRevisados.includes(segundoPartido)) {
+
+                    if (segundoPartido != partido) {
+
+
+                        let combinacionesAcertadasDosFallos = [];
+                        combinacionesAcertadasUnFallo.forEach(element => {
+                            if (element.indexOf(segundoPartido) === -1) {
+                                combinacionesAcertadasDosFallos.push(element);
+                                dineroGanado = dineroGanado + 2;
+                            }
+                        });
+
+                        let porcentajeFallo = (2 / partidos.length * 100).toFixed(2);;
+                        let porcentajeDeAcierto = (combinacionesAcertadasDosFallos.length / combinacionesTriples.length * 100).toFixed(2);
+                        let dineroFinal = dineroInvertido + dineroGanado;
+                        let porcentajeGanancias = (dineroFinal / dineroInvertido * 100).toFixed(2);
+
+
+                        console.log("====================================================");
+                        console.log(`Dinero invertido= ${dineroInvertido}€ `);
+                        console.log(`Dinero ganado= ${dineroGanado}€ `);
+                        console.log(`Dinero final= ${dineroFinal}€ `);
+                        if (dineroFinal < 0) {
+                            porcentajeGanancias = -porcentajeGanancias;
+                            console.log(`Porcentaje de ganancias= ${ porcentajeGanancias  }% `);
+                        } else {
+                            porcentajeGanancias = porcentajeGanancias * -1;
+                            console.log(`Porcentaje de ganancias= +${ porcentajeGanancias }% `);
+                        }
+                        porcentajeTotal = porcentajeTotal - porcentajeGanancias;
+
+                        console.log(`Combinaciones acertadas fallando el partido ${ partido } y el ${ segundoPartido}: ${ combinacionesAcertadasDosFallos.length } que equivale a un ${ porcentajeDeAcierto }% de acierto`);
+
+                        numero++;
+                        // combinacionesAcertadasDosFallos.forEach(element => {
+                        //     // console.log(element);
+                        // });
+                    }
+                }
+
+
+            });
+
+
+
+        });
+
+        console.log(`Porcentaje TOTAL = -${ (porcentajeTotal/  numero).toFixed(2)  }% `);
+
+
+        function combinations(array, unique) {
+            return (function() {
+                'use strict';
+                return main(array, unique);
+
+                function create_array(array, value) {
+                    var r_array = [];
+                    var limit = array.indexOf(value);
+                    for (var i = 0; i < limit; i++) {
+                        r_array.push(array[i]);
+                    }
+                    while (limit--) {
+                        array.shift();
+                    }
+                    return array.concat(r_array);
+                }
+
+                function combinations(array, number, unique) {
+                    var r_array = [];
+                    var c_number = number;
+                    var first = array.shift();
+                    while (number--) {
+                        r_array.push([first].concat(array.slice(0, c_number - 1)));
+                        array.push(array.shift());
+                    }
+                    if (unique) {
+                        r_array.map(function(value) {
+                            return value.sort();
+                        });
+                    }
+                    return r_array;
+                }
+
+                function remove_duplicate(array, value) {
+                    return array.filter(function(item, index, inputArray) {
+                        return inputArray.indexOf(item) == index;
+                    });
+                }
+
+                function repopulate_array(array, new_value) {
+                    for (var i = 0, s = new_value.length; i < s; i++) {
+                        array.push(new_value[i].join('-'));
+                    }
+                    return array;
+                }
+
+                function main(array) {
+                    unique = typeof unique === 'undefined' ? false : unique;
+                    var len = array.length + 1;
+                    var c_array = array.slice();
+                    var r_array = [];
+                    var t_array = [];
+                    var value;
+                    while (len--) {
+                        while (c_array.length) {
+                            value = c_array.shift();
+                            t_array = create_array(array.slice(), value);
+                            repopulate_array(r_array, combinations(t_array, len, unique));
+                        }
+                        c_array = array.slice();
+                    }
+                    r_array = remove_duplicate(r_array);
+                    return r_array;
+                }
+            })();
+        }
+    </script>
+</body>
+
+</html>
